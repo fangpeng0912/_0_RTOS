@@ -20,7 +20,7 @@ void delay(int count){
 
 //悬起PENDSV异常函数定义
 void trigglePendSV(void){
-	//设置优先级  放大棚
+	//设置优先级 
 	MEM8(NVIC_PENDSVPRI)=NVIC_PENDSV_PRISET;
 	//悬起PENDSV中断
 	MEM32(NVIC_ICSR)=NVIC_PENDSVSET;
