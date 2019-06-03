@@ -4,13 +4,13 @@ __asm void PendSV_Handler(void){
 	
 	LDR R0 ,=block_ptr
 	LDR R0 ,[R0]
-	LDR R0 ,[R0]         //R0内存放的是栈指针
+	LDR R0 ,[R0]         //R0内存放的是栈顶指针
 
-	STMDB R0! ,{R4-R11}  //从栈指针处连续递减地址存放R4-R11
+	STMDB R0! ,{R4-R11}  //从栈指针处连续递减地址存放R4-R11(上来就要减1)
 	
 	LDR R1 ,=block_ptr
 	LDR R1 ,[R1]
-	STR R0 ,[R1]         //更新栈指针，指向新栈
+	STR R0 ,[R1]         //R1内存放的是栈底指针
 	
 	LDMIA R0! ,{R4-R11}  //从新栈指针处连续多次递增地址读取数据放入R4-R11
 	
