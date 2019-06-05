@@ -38,8 +38,8 @@ void tTaskInit(tTask *task, void (*entry)(void*), void *param, tTaskStack *stack
 
 //任务调度
 void tTaskSched(void){
-	if(currentTask == taskTable[0]){     //这里为什么PSP会变，从1024->101C?
-		nextTask = taskTable[1];
+	if(currentTask == taskTable[0]){     //这里为什么PSP会变，从1024->101C?原因：进入了一个新的函数，总得保存下一个要执行的指令地址什么的，由程序自动管理，无需认为干涉
+		nextTask = taskTable[1];           //认为干涉的只有R11->R4的值
 	}
 	else{
 		nextTask = taskTable[0];

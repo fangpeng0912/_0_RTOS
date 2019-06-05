@@ -16,7 +16,7 @@ __asm void PendSV_Handler(void){
 	IMPORT currentTask
 	IMPORT nextTask
 
-	MRS R0, PSP                       //将PSP放入R0中，此时PSP变成FF8或者1FF8，为什么不是1004或者2004？
+	MRS R0, PSP                       //将PSP放入R0中，此时PSP变成FF8或者1FF8，为什么不是1004或者2004？原因：应该是进入PendSV中断会自动保存xpsr/PC/LR/R12/R3->R0的值
 	CBZ R0, PendSVHandler_nosave;     //判断PSP是否为0，为0则跳转
 	
 /*数据保存*/
