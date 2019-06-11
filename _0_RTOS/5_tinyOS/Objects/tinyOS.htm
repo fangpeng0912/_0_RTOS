@@ -3,11 +3,11 @@
 <title>Static Call Graph - [.\Objects\tinyOS.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\tinyOS.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060061: Last Updated: Tue Jun 11 08:08:31 2019
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060061: Last Updated: Tue Jun 11 22:33:00 2019
 <BR><P>
-<H3>Maximum Stack Usage =         20 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
+<H3>Maximum Stack Usage =         56 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
-SysTick_Handler &rArr; tTaskSystemTickHandler &rArr; tTaskSched
+SysTick_Handler &rArr; tTaskSystemTickHandler &rArr; tTaskSched &rArr; tTaskHighestReady &rArr; tBitmapGetFirstSet
 <P>
 <H3>
 Mutually Recursive functions
@@ -71,7 +71,7 @@ Global Symbols
 <P><STRONG><a name="[23]"></a>__main</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, entry.o(.ARM.Collect$$$$00000000))
 <BR>[Address Reference Count : 1]<UL><LI> startup_armcm3.o(.text)
 </UL>
-<P><STRONG><a name="[34]"></a>_main_stk</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, entry2.o(.ARM.Collect$$$$00000001))
+<P><STRONG><a name="[39]"></a>_main_stk</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, entry2.o(.ARM.Collect$$$$00000001))
 
 <P><STRONG><a name="[27]"></a>_main_scatterload</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, entry5.o(.ARM.Collect$$$$00000004))
 <BR><BR>[Calls]<UL><LI><a href="#[28]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__scatterload
@@ -81,15 +81,15 @@ Global Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[28]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__scatterload
 </UL>
 
-<P><STRONG><a name="[35]"></a>_main_clock</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, entry7b.o(.ARM.Collect$$$$00000008))
+<P><STRONG><a name="[3a]"></a>_main_clock</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, entry7b.o(.ARM.Collect$$$$00000008))
 
-<P><STRONG><a name="[36]"></a>_main_cpp_init</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, entry8b.o(.ARM.Collect$$$$0000000A))
+<P><STRONG><a name="[3b]"></a>_main_cpp_init</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, entry8b.o(.ARM.Collect$$$$0000000A))
 
-<P><STRONG><a name="[37]"></a>_main_init</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, entry9a.o(.ARM.Collect$$$$0000000B))
+<P><STRONG><a name="[3c]"></a>_main_init</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, entry9a.o(.ARM.Collect$$$$0000000B))
 
-<P><STRONG><a name="[38]"></a>__rt_final_cpp</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, entry10a.o(.ARM.Collect$$$$0000000D))
+<P><STRONG><a name="[3d]"></a>__rt_final_cpp</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, entry10a.o(.ARM.Collect$$$$0000000D))
 
-<P><STRONG><a name="[39]"></a>__rt_final_exit</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, entry11a.o(.ARM.Collect$$$$0000000F))
+<P><STRONG><a name="[3e]"></a>__rt_final_exit</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, entry11a.o(.ARM.Collect$$$$0000000F))
 
 <P><STRONG><a name="[8]"></a>PendSV_Handler</STRONG> (Thumb, 40 bytes, Stack size 0 bytes, switch.o(.emb_text))
 <BR>[Address Reference Count : 1]<UL><LI> startup_armcm3.o(RESET)
@@ -225,13 +225,13 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[27]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_main_scatterload
 </UL>
 
-<P><STRONG><a name="[3a]"></a>__scatterload_rt2</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, init.o(.text), UNUSED)
+<P><STRONG><a name="[3f]"></a>__scatterload_rt2</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, init.o(.text), UNUSED)
 
 <P><STRONG><a name="[26]"></a>IdleTaskEntry</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, main.o(i.IdleTaskEntry))
 <BR>[Address Reference Count : 1]<UL><LI> main.o(i.main)
 </UL>
-<P><STRONG><a name="[9]"></a>SysTick_Handler</STRONG> (Thumb, 8 bytes, Stack size 4 bytes, switch.o(i.SysTick_Handler))
-<BR><BR>[Stack]<UL><LI>Max Depth = 20<LI>Call Chain = SysTick_Handler &rArr; tTaskSystemTickHandler &rArr; tTaskSched
+<P><STRONG><a name="[9]"></a>SysTick_Handler</STRONG> (Thumb, 8 bytes, Stack size 8 bytes, switch.o(i.SysTick_Handler))
+<BR><BR>[Stack]<UL><LI>Max Depth = 56<LI>Call Chain = SysTick_Handler &rArr; tTaskSystemTickHandler &rArr; tTaskSched &rArr; tTaskHighestReady &rArr; tBitmapGetFirstSet
 </UL>
 <BR>[Calls]<UL><LI><a href="#[2a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tTaskSystemTickHandler
 </UL>
@@ -240,101 +240,139 @@ Global Symbols
 <P><STRONG><a name="[22]"></a>SystemInit</STRONG> (Thumb, 8 bytes, Stack size 0 bytes, system_armcm3.o(i.SystemInit))
 <BR>[Address Reference Count : 1]<UL><LI> startup_armcm3.o(.text)
 </UL>
-<P><STRONG><a name="[3b]"></a>__scatterload_copy</STRONG> (Thumb, 14 bytes, Stack size unknown bytes, handlers.o(i.__scatterload_copy), UNUSED)
+<P><STRONG><a name="[40]"></a>__scatterload_copy</STRONG> (Thumb, 14 bytes, Stack size unknown bytes, handlers.o(i.__scatterload_copy), UNUSED)
 
-<P><STRONG><a name="[3c]"></a>__scatterload_null</STRONG> (Thumb, 2 bytes, Stack size unknown bytes, handlers.o(i.__scatterload_null), UNUSED)
+<P><STRONG><a name="[41]"></a>__scatterload_null</STRONG> (Thumb, 2 bytes, Stack size unknown bytes, handlers.o(i.__scatterload_null), UNUSED)
 
-<P><STRONG><a name="[3d]"></a>__scatterload_zeroinit</STRONG> (Thumb, 14 bytes, Stack size unknown bytes, handlers.o(i.__scatterload_zeroinit), UNUSED)
+<P><STRONG><a name="[42]"></a>__scatterload_zeroinit</STRONG> (Thumb, 14 bytes, Stack size unknown bytes, handlers.o(i.__scatterload_zeroinit), UNUSED)
 
-<P><STRONG><a name="[21]"></a>main</STRONG> (Thumb, 78 bytes, Stack size 8 bytes, main.o(i.main))
-<BR><BR>[Stack]<UL><LI>Max Depth = 20<LI>Call Chain = main &rArr; tTaskInit
+<P><STRONG><a name="[21]"></a>main</STRONG> (Thumb, 74 bytes, Stack size 8 bytes, main.o(i.main))
+<BR><BR>[Stack]<UL><LI>Max Depth = 32<LI>Call Chain = main &rArr; tTaskInit
 </UL>
 <BR>[Calls]<UL><LI><a href="#[2b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tTaskSchedInit
-<LI><a href="#[2d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tTaskRunFirst
+<LI><a href="#[2e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tTaskRunFirst
+<LI><a href="#[2d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tTaskHighestReady
 <LI><a href="#[2c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tTaskInit
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> entry9a.o(.ARM.Collect$$$$0000000B)
 </UL>
-<P><STRONG><a name="[33]"></a>tSetSysTickPeriod</STRONG> (Thumb, 74 bytes, Stack size 12 bytes, switch.o(i.tSetSysTickPeriod))
+<P><STRONG><a name="[31]"></a>tBitmapClear</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, tlib.o(i.tBitmapClear))
+<BR><BR>[Called By]<UL><LI><a href="#[2f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tTaskDelay
+</UL>
+
+<P><STRONG><a name="[34]"></a>tBitmapGetFirstSet</STRONG> (Thumb, 52 bytes, Stack size 8 bytes, tlib.o(i.tBitmapGetFirstSet))
+<BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = tBitmapGetFirstSet
+</UL>
+<BR>[Called By]<UL><LI><a href="#[2d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tTaskHighestReady
+</UL>
+
+<P><STRONG><a name="[37]"></a>tBitmapInit</STRONG> (Thumb, 6 bytes, Stack size 0 bytes, tlib.o(i.tBitmapInit))
+<BR><BR>[Called By]<UL><LI><a href="#[2b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tTaskSchedInit
+</UL>
+
+<P><STRONG><a name="[35]"></a>tBitmapSet</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, tlib.o(i.tBitmapSet))
+<BR><BR>[Called By]<UL><LI><a href="#[2a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tTaskSystemTickHandler
+<LI><a href="#[2c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tTaskInit
+</UL>
+
+<P><STRONG><a name="[38]"></a>tSetSysTickPeriod</STRONG> (Thumb, 72 bytes, Stack size 12 bytes, switch.o(i.tSetSysTickPeriod))
 <BR><BR>[Stack]<UL><LI>Max Depth = 12<LI>Call Chain = tSetSysTickPeriod
 </UL>
 <BR>[Called By]<UL><LI><a href="#[24]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;task1Entry
 </UL>
 
-<P><STRONG><a name="[2e]"></a>tTaskDelay</STRONG> (Thumb, 28 bytes, Stack size 12 bytes, switch.o(i.tTaskDelay))
-<BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = tTaskDelay &rArr; tTaskSched
+<P><STRONG><a name="[2f]"></a>tTaskDelay</STRONG> (Thumb, 40 bytes, Stack size 16 bytes, switch.o(i.tTaskDelay))
+<BR><BR>[Stack]<UL><LI>Max Depth = 48<LI>Call Chain = tTaskDelay &rArr; tTaskSched &rArr; tTaskHighestReady &rArr; tBitmapGetFirstSet
 </UL>
-<BR>[Calls]<UL><LI><a href="#[30]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tTaskSched
-<LI><a href="#[31]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tTaskExitCritical
-<LI><a href="#[2f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tTaskEnterCritical
+<BR>[Calls]<UL><LI><a href="#[31]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tBitmapClear
+<LI><a href="#[32]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tTaskSched
+<LI><a href="#[33]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tTaskExitCritical
+<LI><a href="#[30]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tTaskEnterCritical
 </UL>
 <BR>[Called By]<UL><LI><a href="#[25]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;task2Entry
 <LI><a href="#[24]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;task1Entry
 </UL>
 
-<P><STRONG><a name="[2f]"></a>tTaskEnterCritical</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, switch.o(i.tTaskEnterCritical))
+<P><STRONG><a name="[30]"></a>tTaskEnterCritical</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, switch.o(i.tTaskEnterCritical))
 <BR><BR>[Called By]<UL><LI><a href="#[2a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tTaskSystemTickHandler
-<LI><a href="#[30]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tTaskSched
-<LI><a href="#[2e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tTaskDelay
+<LI><a href="#[32]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tTaskSched
+<LI><a href="#[2f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tTaskDelay
 </UL>
 
-<P><STRONG><a name="[31]"></a>tTaskExitCritical</STRONG> (Thumb, 10 bytes, Stack size 0 bytes, switch.o(i.tTaskExitCritical))
+<P><STRONG><a name="[33]"></a>tTaskExitCritical</STRONG> (Thumb, 10 bytes, Stack size 0 bytes, switch.o(i.tTaskExitCritical))
 <BR><BR>[Called By]<UL><LI><a href="#[2a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tTaskSystemTickHandler
-<LI><a href="#[30]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tTaskSched
-<LI><a href="#[2e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tTaskDelay
+<LI><a href="#[32]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tTaskSched
+<LI><a href="#[2f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tTaskDelay
 </UL>
 
-<P><STRONG><a name="[2c]"></a>tTaskInit</STRONG> (Thumb, 136 bytes, Stack size 12 bytes, main.o(i.tTaskInit))
-<BR><BR>[Stack]<UL><LI>Max Depth = 12<LI>Call Chain = tTaskInit
+<P><STRONG><a name="[2d]"></a>tTaskHighestReady</STRONG> (Thumb, 18 bytes, Stack size 8 bytes, switch.o(i.tTaskHighestReady))
+<BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = tTaskHighestReady &rArr; tBitmapGetFirstSet
+</UL>
+<BR>[Calls]<UL><LI><a href="#[34]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tBitmapGetFirstSet
+</UL>
+<BR>[Called By]<UL><LI><a href="#[32]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tTaskSched
+<LI><a href="#[21]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
+</UL>
+
+<P><STRONG><a name="[2c]"></a>tTaskInit</STRONG> (Thumb, 168 bytes, Stack size 24 bytes, main.o(i.tTaskInit))
+<BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = tTaskInit
+</UL>
+<BR>[Calls]<UL><LI><a href="#[35]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tBitmapSet
 </UL>
 <BR>[Called By]<UL><LI><a href="#[21]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[2d]"></a>tTaskRunFirst</STRONG> (Thumb, 24 bytes, Stack size 0 bytes, switch.o(i.tTaskRunFirst))
+<P><STRONG><a name="[2e]"></a>tTaskRunFirst</STRONG> (Thumb, 24 bytes, Stack size 0 bytes, switch.o(i.tTaskRunFirst))
 <BR><BR>[Called By]<UL><LI><a href="#[21]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[30]"></a>tTaskSched</STRONG> (Thumb, 206 bytes, Stack size 4 bytes, switch.o(i.tTaskSched))
-<BR><BR>[Stack]<UL><LI>Max Depth = 4<LI>Call Chain = tTaskSched
+<P><STRONG><a name="[32]"></a>tTaskSched</STRONG> (Thumb, 56 bytes, Stack size 16 bytes, switch.o(i.tTaskSched))
+<BR><BR>[Stack]<UL><LI>Max Depth = 32<LI>Call Chain = tTaskSched &rArr; tTaskHighestReady &rArr; tBitmapGetFirstSet
 </UL>
-<BR>[Calls]<UL><LI><a href="#[32]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tTaskSwitch
-<LI><a href="#[31]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tTaskExitCritical
-<LI><a href="#[2f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tTaskEnterCritical
+<BR>[Calls]<UL><LI><a href="#[36]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tTaskSwitch
+<LI><a href="#[33]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tTaskExitCritical
+<LI><a href="#[30]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tTaskEnterCritical
+<LI><a href="#[2d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tTaskHighestReady
 </UL>
 <BR>[Called By]<UL><LI><a href="#[2a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tTaskSystemTickHandler
-<LI><a href="#[2e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tTaskDelay
+<LI><a href="#[2f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tTaskDelay
 </UL>
 
-<P><STRONG><a name="[2b]"></a>tTaskSchedInit</STRONG> (Thumb, 8 bytes, Stack size 0 bytes, switch.o(i.tTaskSchedInit))
-<BR><BR>[Called By]<UL><LI><a href="#[21]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
+<P><STRONG><a name="[2b]"></a>tTaskSchedInit</STRONG> (Thumb, 16 bytes, Stack size 8 bytes, switch.o(i.tTaskSchedInit))
+<BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = tTaskSchedInit
+</UL>
+<BR>[Calls]<UL><LI><a href="#[37]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tBitmapInit
+</UL>
+<BR>[Called By]<UL><LI><a href="#[21]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[32]"></a>tTaskSwitch</STRONG> (Thumb, 10 bytes, Stack size 0 bytes, switch.o(i.tTaskSwitch))
-<BR><BR>[Called By]<UL><LI><a href="#[30]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tTaskSched
+<P><STRONG><a name="[36]"></a>tTaskSwitch</STRONG> (Thumb, 10 bytes, Stack size 0 bytes, switch.o(i.tTaskSwitch))
+<BR><BR>[Called By]<UL><LI><a href="#[32]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tTaskSched
 </UL>
 
-<P><STRONG><a name="[2a]"></a>tTaskSystemTickHandler</STRONG> (Thumb, 58 bytes, Stack size 12 bytes, switch.o(i.tTaskSystemTickHandler))
-<BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = tTaskSystemTickHandler &rArr; tTaskSched
+<P><STRONG><a name="[2a]"></a>tTaskSystemTickHandler</STRONG> (Thumb, 86 bytes, Stack size 16 bytes, switch.o(i.tTaskSystemTickHandler))
+<BR><BR>[Stack]<UL><LI>Max Depth = 48<LI>Call Chain = tTaskSystemTickHandler &rArr; tTaskSched &rArr; tTaskHighestReady &rArr; tBitmapGetFirstSet
 </UL>
-<BR>[Calls]<UL><LI><a href="#[30]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tTaskSched
-<LI><a href="#[31]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tTaskExitCritical
-<LI><a href="#[2f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tTaskEnterCritical
+<BR>[Calls]<UL><LI><a href="#[32]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tTaskSched
+<LI><a href="#[33]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tTaskExitCritical
+<LI><a href="#[30]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tTaskEnterCritical
+<LI><a href="#[35]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tBitmapSet
 </UL>
 <BR>[Called By]<UL><LI><a href="#[9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysTick_Handler
 </UL>
 
-<P><STRONG><a name="[24]"></a>task1Entry</STRONG> (Thumb, 34 bytes, Stack size 0 bytes, main.o(i.task1Entry))
-<BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = task1Entry &rArr; tTaskDelay &rArr; tTaskSched
+<P><STRONG><a name="[24]"></a>task1Entry</STRONG> (Thumb, 32 bytes, Stack size 0 bytes, main.o(i.task1Entry))
+<BR><BR>[Stack]<UL><LI>Max Depth = 48<LI>Call Chain = task1Entry &rArr; tTaskDelay &rArr; tTaskSched &rArr; tTaskHighestReady &rArr; tBitmapGetFirstSet
 </UL>
-<BR>[Calls]<UL><LI><a href="#[2e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tTaskDelay
-<LI><a href="#[33]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tSetSysTickPeriod
+<BR>[Calls]<UL><LI><a href="#[2f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tTaskDelay
+<LI><a href="#[38]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tSetSysTickPeriod
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> main.o(i.main)
 </UL>
 <P><STRONG><a name="[25]"></a>task2Entry</STRONG> (Thumb, 28 bytes, Stack size 0 bytes, main.o(i.task2Entry))
-<BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = task2Entry &rArr; tTaskDelay &rArr; tTaskSched
+<BR><BR>[Stack]<UL><LI>Max Depth = 48<LI>Call Chain = task2Entry &rArr; tTaskDelay &rArr; tTaskSched &rArr; tTaskHighestReady &rArr; tBitmapGetFirstSet
 </UL>
-<BR>[Calls]<UL><LI><a href="#[2e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tTaskDelay
+<BR>[Calls]<UL><LI><a href="#[2f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tTaskDelay
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> main.o(i.main)
 </UL><P>

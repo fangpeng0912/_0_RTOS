@@ -1,5 +1,8 @@
 #include "tinyos.h"
 #include "ARMCM3.h"
+#include "tConfig.h"
+
+extern tBitmap taskPrioBitmap;
 
 //宏定义NVIC寄存器相关地址和内容
 #define NVIC_ICSR_REG         0xE000ED04     //中断控制及状态寄存器，主要用来悬起PENSV异常（系统异常无需使能，只有外部中断需要使能）
@@ -7,21 +10,77 @@
 #define NVIC_PENDSV_PRI_REG   0xE000ED22	   //PENDSV优先级寄存器，主要用来设置PENDSV优先级（可悬起系统调用，配置为最低优先级，注意与SVC区别：SVC为系统调用，不可悬起，且必须立即执行，如果无法立即执行，将上访成fault异常） 
 #define NVIC_PENDSV_PRI_SET   0xFF           //这样设置无论该内核用多少位表达优先级、优先级分组是什么样的，优先级都是最低的
 
-//临界区保护函数
-uint32_t tTaskEnterCritical(void){
-	uint32_t primask = __get_PRIMASK();
-	__disable_irq();
-	return primask;
-}
-
-void tTaskExitCritical(uint32_t status){
-	__set_PRIMASK(status);
-}
-
 //将地址转化为实际的内存空间
 #define MEM8(addr)  *(volatile unsigned char*)(addr)
 #define MEM32(addr) *(volatile unsigned long*)(addr)
+
+//////////////SysTick初始化
+void tSetSysTickPeriod(uint32_t ms){
+	SysTick->LOAD = ms * SystemCoreClock / 1000;  //减到0溢出
+	NVIC_SetPriority(SysTick_IRQn, (1 << __NVIC_PRIO_BITS) - 1);
+	SysTick->VAL = 0;
+	SysTick->CTRL = SysTick_CTRL_CLKSOURCE_Msk |
+									SysTick_CTRL_TICKINT_Msk |
+									SysTick_CTRL_ENABLE_Msk;
+}
+
+///////////systick中断处理，并检测软延时计数器是否为零
+void tTaskSystemTickHandler(){
+	int i;
+	uint32_t status = tTaskEnterCritical();
+
+	for(i = 0; i < TCONFIG_PRIO_COUNT; ++i){
+		if(taskTable[i]->delayTicks > 0){
+			--taskTable[i]->delayTicks;
+			if(taskTable[i]->delayTicks == 0){
+				tBitmapSet(&taskPrioBitmap, i);
+			}
+		}
+		else{
+			tBitmapSet(&taskPrioBitmap, i);
+		}
+	}
 	
+	tTaskExitCritical(status);
+	
+	//任务调度
+	tTaskSched();
+}
+
+/////////////SysTick定时中断
+void SysTick_Handler(){
+	tTaskSystemTickHandler();
+}
+
+
+
+
+
+
+
+//任务调度初始化
+void tTaskSchedInit(void){
+	//将调度锁计数器清0
+	schedLockCount = 0;
+	//将任务优先级位图清零
+	tBitmapInit(&taskPrioBitmap);
+}
+
+void tTaskRunFirst(void){
+	//设置了一个标记，先不用管，用于与tTaskSwitch区分，用于在PEND_SV中判断当前切换是首任务切换还是已经跑起来后执行的切换
+	__set_PSP(0);   
+	
+	//设置优先级 
+	MEM8(NVIC_PENDSV_PRI_REG) = NVIC_PENDSV_PRI_SET;
+	//悬起PENDSV中断
+	MEM32(NVIC_ICSR_REG) = NVIC_PENDSV_SET;
+}
+
+void tTaskSwitch(void){
+	//悬起PENDSV中断
+	MEM32(NVIC_ICSR_REG) = NVIC_PENDSV_SET;
+}
+
 __asm void PendSV_Handler(void){
 	
 	IMPORT currentTask
@@ -56,46 +115,32 @@ PendSVHandler_nosave
 	BX LR                             //退出异常时，硬件自动恢复R0-R3 -> R12 -> LR -> PC -> xPSR
 }
 
-void tTaskRunFirst(void){
-	//设置了一个标记，先不用管，用于与tTaskSwitch区分，用于在PEND_SV中判断当前切换是首任务切换还是已经跑起来后执行的切换
-	__set_PSP(0);   
+
+
+
+
+
+
+////////////////软延时函数
+void tTaskDelay(uint32_t delay){
+	uint32_t status = tTaskEnterCritical();
+
+	currentTask->delayTicks = delay;                  
+	tBitmapClear(&taskPrioBitmap, currentTask->prio);
+	tTaskSched();
 	
-	//设置优先级 
-	MEM8(NVIC_PENDSV_PRI_REG) = NVIC_PENDSV_PRI_SET;
-	//悬起PENDSV中断
-	MEM32(NVIC_ICSR_REG) = NVIC_PENDSV_SET;
+	tTaskExitCritical(status);	
 }
 
-void tTaskSwitch(void){
-	//悬起PENDSV中断
-	MEM32(NVIC_ICSR_REG) = NVIC_PENDSV_SET;
+///////////获取最高优先级任务
+tTask *tTaskHighestReady(void){
+	uint32_t highestPrio = tBitmapGetFirstSet(&taskPrioBitmap);
+	return taskTable[highestPrio];
 }
 
-//任务调度初始化
-void tTaskSchedInit(){
-	schedLockCount = 0;
-}
-
-//任务调度失能
-void tTaskSchedDisable(void){
-	uint32_t status = tTaskEnterCritical();
-	if(schedLockCount < 255){
-		++schedLockCount;
-	}
-	tTaskExitCritical(status);
-}
-
-//任务调度使能
-void tTaskSchedEnable(void){
-	uint32_t status = tTaskEnterCritical();
-	if(--schedLockCount == 0){
-		tTaskSched();
-	}
-	tTaskExitCritical(status);
-}
-
-//任务调度
+////////////任务调度
 void tTaskSched(void){
+	tTask *tempTask;
 	uint32_t status = tTaskEnterCritical();
 	
 	//检查是否上锁
@@ -104,88 +149,49 @@ void tTaskSched(void){
 		return;
 	}
 	
-	if(currentTask == idleTask){
-		if(taskTable[0]->delayTicks == 0){
-			nextTask = taskTable[0];
-		}
-		else if(taskTable[1]->delayTicks == 0){
-			nextTask = taskTable[1];
-		}
-		else{
-			tTaskExitCritical(status);
-			return;
-		}
+	//获得最高优先级任务
+	tempTask = tTaskHighestReady();
+	if(tempTask != currentTask){
+		nextTask = tempTask;
+		tTaskSwitch();
 	}
-	else{
-		if(currentTask == taskTable[0]){
-			if(taskTable[1]->delayTicks == 0){
-				nextTask = taskTable[1];
-			}
-			else if(currentTask->delayTicks !=0){
-				nextTask = idleTask;
-			}
-			else{
-				tTaskExitCritical(status);
-				return;
-			}
-		}
-		else if(currentTask == taskTable[1]){
-			if(taskTable[0]->delayTicks == 0){
-				nextTask = taskTable[0];
-			}
-			else if(currentTask->delayTicks !=0){
-				nextTask = idleTask;
-			}
-			else{
-				tTaskExitCritical(status);
-				return;
-			}
-		}
-	}
-	
-	tTaskSwitch();
-	
+
 	tTaskExitCritical(status);
 }
 
-//SysTick初始化
-void tSetSysTickPeriod(uint32_t ms){
-	SysTick->LOAD = ms * SystemCoreClock / 1000 - 1;
-	NVIC_SetPriority(SysTick_IRQn, (1 << __NVIC_PRIO_BITS) - 1);
-	SysTick->VAL = 0;
-	SysTick->CTRL = SysTick_CTRL_CLKSOURCE_Msk |
-									SysTick_CTRL_TICKINT_Msk |
-									SysTick_CTRL_ENABLE_Msk;
+
+
+
+
+
+
+/////////////临界区保护函数
+uint32_t tTaskEnterCritical(void){
+	uint32_t primask = __get_PRIMASK();
+	__disable_irq();
+	return primask;
 }
 
-//软延时函数
-void tTaskDelay(uint32_t delay){
-	uint32_t status = tTaskEnterCritical();
-
-	currentTask->delayTicks = delay;
-	tTaskSched();
-	
-	tTaskExitCritical(status);	
+void tTaskExitCritical(uint32_t status){
+	__set_PRIMASK(status);
 }
-	
-//检测软延时计数器是否为零
-void tTaskSystemTickHandler(){
-	int i;
-	uint32_t status = tTaskEnterCritical();
 
-	for(i = 0; i < 2; ++i){
-		if(taskTable[i]->delayTicks > 0)
-			--taskTable[i]->delayTicks;
+/////////////任务调度失能、使能(用于调度锁)
+void tTaskSchedDisable(void){
+	uint32_t status = tTaskEnterCritical();
+	if(schedLockCount < 255){
+		++schedLockCount;
 	}
-	
 	tTaskExitCritical(status);
-	
-	//任务调度
-	tTaskSched();
 }
 
-//SysTick定时中断
-void SysTick_Handler(){
-	tTaskSystemTickHandler();
+void tTaskSchedEnable(void){
+	uint32_t status = tTaskEnterCritical();
+	if(--schedLockCount == 0){
+		tTaskSched();
+	}
+	tTaskExitCritical(status);
 }
+
+
 

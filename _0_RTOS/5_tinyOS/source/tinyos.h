@@ -9,6 +9,7 @@ typedef uint32_t tTaskStack;
 typedef struct{
 	tTaskStack *stack;
 	uint32_t delayTicks;   //添加软延时器的计数器
+	uint32_t prio;         //任务的优先级
 }tTask;
 
 extern tTask *currentTask;
