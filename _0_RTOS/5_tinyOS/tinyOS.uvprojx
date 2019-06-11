@@ -385,6 +385,11 @@
               <FileType>1</FileType>
               <FilePath>.\source\switch.c</FilePath>
             </File>
+            <File>
+              <FileName>tLib.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\source\tLib.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

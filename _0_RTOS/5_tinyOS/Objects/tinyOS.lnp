@@ -1,6 +1,7 @@
 --cpu Cortex-M3
 ".\objects\main.o"
 ".\objects\switch.o"
+".\objects\tlib.o"
 ".\objects\startup_armcm3.o"
 ".\objects\system_armcm3.o"
 --library_type=microlib --strict --scatter ".\Objects\tinyOS.sct"

@@ -2,6 +2,7 @@
 #define _TINYOS_H_
 
 #include <stdint.h>
+#include "tLib.h"
 
 typedef uint32_t tTaskStack;
 
