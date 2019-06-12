@@ -390,6 +390,11 @@
               <FileType>1</FileType>
               <FilePath>.\source\tLib.c</FilePath>
             </File>
+            <File>
+              <FileName>tList.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\source\tList.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
