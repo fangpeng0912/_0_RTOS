@@ -95,8 +95,8 @@ int main(void){
 	//任务调度初始化
 	tTaskSchedInit();
 	//任务初始化
-	tTaskInit(&tTask1, task1Entry, (void*)0x11111111, &task1Env[1024], 0);
-	tTaskInit(&tTask2, task2Entry, (void*)0x22222222, &task2Env[1024], 1);		
+	tTaskInit(&tTask1, task1Entry, (void*)0x11111111, &task1Env[1024], 1);
+	tTaskInit(&tTask2, task2Entry, (void*)0x22222222, &task2Env[1024], 2);		
 	tTaskInit(&tIdleTask, IdleTaskEntry, (void*)0x0, &idleTaskEnv[1024], TCONFIG_PRIO_COUNT - 1);		 
 	//定义初始任务
 	nextTask = tTaskHighestReady();

@@ -29,8 +29,8 @@ void tTaskSystemTickHandler(){
 	int i;
 	uint32_t status = tTaskEnterCritical();
 
-	for(i = 0; i < TCONFIG_PRIO_COUNT; ++i){
-		if(taskTable[i]->delayTicks > 0){
+	for(i = 0; i < TCONFIG_PRIO_COUNT; ++i){    
+		if(taskTable[i]->delayTicks > 0){                 //如果taskTable某个元素未初始化，即此时值为NULL，能够判断delayTicks > 0，但是不会做--操作，这里最好做一个判断是否为NULL的操作
 			--taskTable[i]->delayTicks;
 			if(taskTable[i]->delayTicks == 0){
 				tBitmapSet(&taskPrioBitmap, i);
