@@ -13,16 +13,18 @@ typedef uint32_t tTaskStack;
 
 typedef struct{
 	tTaskStack *stack;
+	tNode linkNode;        //同优先级任务结点
 	uint32_t delayTicks;   //添加软延时器的计数器
 	tNode delayNode;       //任务延时结点
 	uint32_t prio;         //任务的优先级
 	uint32_t state;        //任务是否处于延时状态
+	uint32_t slice;        //时间片计数器
 }tTask;
 
 extern tTask *currentTask;
 extern tTask *nextTask;
 extern tTask *idleTask;
-extern tTask *taskTable[];
+extern tList taskTable[];
 extern uint8_t schedLockCount;
 
 void tTaskRunFirst(void);

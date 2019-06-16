@@ -3,6 +3,7 @@
 
 extern tBitmap taskPrioBitmap;
 extern tList tTaskDelayedList;
+extern tHeadNode similar_prio_task_head_node[TCONFIG_PRIO_COUNT];
 
 void tTaskDelayedListInit(void);
 void tTimeTaskWait(tTask *task, uint32_t ticks);
@@ -30,27 +31,27 @@ void tSetSysTickPeriod(uint32_t ms){
 									SysTick_CTRL_ENABLE_Msk;
 }
 
-tTask *task = NULL;
 ///////////systick中断处理，并检测软延时计数器是否为零
 void tTaskSystemTickHandler(){
 	tNode *node = NULL;
+	tTask *task = NULL;
 	
 	uint32_t status = tTaskEnterCritical();
 
 	for(node = tTaskDelayedList->firstNode; node != &(tTaskDelayedList->headNode); node = node->nextNode){    
-		/*if(taskTable[i]->delayTicks > 0){                 //如果taskTable某个元素未初始化，即此时值为NULL，能够判断delayTicks > 0，但是不会做--操作，这里最好做一个判断是否为NULL的操作
-			--taskTable[i]->delayTicks;
-			if(taskTable[i]->delayTicks == 0){
-				tBitmapSet(&taskPrioBitmap, i);
-			}
-		}
-		else{
-			tBitmapSet(&taskPrioBitmap, i);
-		}*/
 		task = tNodeParent(node, tTask, delayNode);
 		if(--task->delayTicks == 0){
 			tTimeTaskWaitUp(task);
 			tTaskSchedRdy(task);
+		}
+	}
+
+	//当前任务时间片为0时，同优先级任务链表的结点数大于零，将当前任务结点放至链表末尾，也就是说同优先级间切换任务的最高时间间隔为TINYOS_SLICE_MAX个systemTicks
+	if(--currentTask->slice == 0){
+		if(tListCount(taskTable[currentTask->prio]) > 0){
+			tListRemoveFirst(taskTable[currentTask->prio]);
+			tListAddLast(taskTable[currentTask->prio], &(currentTask->linkNode));
+			currentTask->slice = TINYOS_SLICE_MAX;
 		}
 	}
 	
@@ -73,10 +74,16 @@ void SysTick_Handler(){
 
 //任务调度初始化
 void tTaskSchedInit(void){
+	int i;
 	//将调度锁计数器清0
 	schedLockCount = 0;
 	//将任务优先级位图清零
 	tBitmapInit(&taskPrioBitmap);
+	//对同优先级列表进行初始化
+	for(i = 0; i < TCONFIG_PRIO_COUNT; ++i){
+		taskTable[i] = &similar_prio_task_head_node[i];
+		tListInit(taskTable[i]);
+	}
 }
 
 void tTaskRunFirst(void){
@@ -153,14 +160,17 @@ void tTimeTaskWaitUp(tTask *task){
 
 ////////////////将任务插入就绪列表
 void tTaskSchedRdy(tTask *task){
-	taskTable[task->prio] = task;
+	tListAddFirst(taskTable[task->prio], &(task->linkNode));
 	tBitmapSet(&taskPrioBitmap, task->prio);
 }
 
 ////////////////将任务从就绪列表中移除
 void tTaskSchedUnRdy(tTask *task){
-	taskTable[task->prio] = NULL;
-	tBitmapClear(&taskPrioBitmap, task->prio);
+	tListRemove(taskTable[task->prio], &(task->linkNode));
+	//当同优先级任务列表中没有其他任务，将对应优先级位图清零
+	if(tListCount(taskTable[task->prio]) == 0){
+		tBitmapClear(&taskPrioBitmap, task->prio);
+	}	
 }
 
 ////////////////软延时函数
@@ -180,7 +190,8 @@ void tTaskDelay(uint32_t delay){
 ///////////获取最高优先级任务
 tTask *tTaskHighestReady(void){
 	uint32_t highestPrio = tBitmapGetFirstSet(&taskPrioBitmap);
-	return taskTable[highestPrio];
+	tNode *node = tListFirst(taskTable[highestPrio]);
+	return tNodeParent(node, tTask, linkNode);
 }
 
 ////////////任务调度
