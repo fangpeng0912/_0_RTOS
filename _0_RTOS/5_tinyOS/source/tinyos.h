@@ -2,14 +2,21 @@
 #define _TINYOS_H_
 
 #include <stdint.h>
+#include <stdlib.h>
 #include "tLib.h"
+#include "tConfig.h"
+
+#define TINYOS_TASK_STATE_RDY      0
+#define TINYOS_TASK_STATE_DELAYED  1
 
 typedef uint32_t tTaskStack;
 
 typedef struct{
 	tTaskStack *stack;
 	uint32_t delayTicks;   //添加软延时器的计数器
+	tNode delayNode;       //任务延时结点
 	uint32_t prio;         //任务的优先级
+	uint32_t state;        //任务是否处于延时状态
 }tTask;
 
 extern tTask *currentTask;

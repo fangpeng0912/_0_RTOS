@@ -33,7 +33,7 @@ typedef tHeadNode *tList;
 #define lastNode    headNode.preNode
 
 #define tNodeParent(childNode_addr, parentNode_type, childNode_name) \
-				(parent*)((uint32_t)childNode_addr - (uint32_t)&((parentNode_type*)0)->childNode_name)
+				(parentNode_type*)((uint32_t)childNode_addr - (uint32_t)&((parentNode_type*)0)->childNode_name)
 
 void tNodeInit(tNode *node);
 void tListInit(tList list);

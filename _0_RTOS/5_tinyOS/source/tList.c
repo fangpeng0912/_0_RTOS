@@ -92,7 +92,7 @@ void tListAddFirst (tList list, tNode *node){
 }
 
 //将指定结点添加到链表的末尾
-void tListAddLast (tList list, tNode * node){
+void tListAddLast (tList list, tNode *node){
 	node->nextNode = &(list->headNode);
   node->preNode = list->lastNode;
 

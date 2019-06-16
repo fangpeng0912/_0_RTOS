@@ -1,8 +1,14 @@
 #include "tinyos.h"
 #include "ARMCM3.h"
-#include "tConfig.h"
 
 extern tBitmap taskPrioBitmap;
+extern tList tTaskDelayedList;
+
+void tTaskDelayedListInit(void);
+void tTimeTaskWait(tTask *task, uint32_t ticks);
+void tTimeTaskWaitUp(tTask *task);
+void tTaskSchedRdy(tTask *task);
+void tTaskSchedUnRdy(tTask *task);
 
 //宏定义NVIC寄存器相关地址和内容
 #define NVIC_ICSR_REG         0xE000ED04     //中断控制及状态寄存器，主要用来悬起PENSV异常（系统异常无需使能，只有外部中断需要使能）
@@ -24,13 +30,15 @@ void tSetSysTickPeriod(uint32_t ms){
 									SysTick_CTRL_ENABLE_Msk;
 }
 
+tTask *task = NULL;
 ///////////systick中断处理，并检测软延时计数器是否为零
 void tTaskSystemTickHandler(){
-	int i;
+	tNode *node = NULL;
+	
 	uint32_t status = tTaskEnterCritical();
 
-	for(i = 0; i < TCONFIG_PRIO_COUNT; ++i){    
-		if(taskTable[i]->delayTicks > 0){                 //如果taskTable某个元素未初始化，即此时值为NULL，能够判断delayTicks > 0，但是不会做--操作，这里最好做一个判断是否为NULL的操作
+	for(node = tTaskDelayedList->firstNode; node != &(tTaskDelayedList->headNode); node = node->nextNode){    
+		/*if(taskTable[i]->delayTicks > 0){                 //如果taskTable某个元素未初始化，即此时值为NULL，能够判断delayTicks > 0，但是不会做--操作，这里最好做一个判断是否为NULL的操作
 			--taskTable[i]->delayTicks;
 			if(taskTable[i]->delayTicks == 0){
 				tBitmapSet(&taskPrioBitmap, i);
@@ -38,6 +46,11 @@ void tTaskSystemTickHandler(){
 		}
 		else{
 			tBitmapSet(&taskPrioBitmap, i);
+		}*/
+		task = tNodeParent(node, tTask, delayNode);
+		if(--task->delayTicks == 0){
+			tTimeTaskWaitUp(task);
+			tTaskSchedRdy(task);
 		}
 	}
 	
@@ -120,13 +133,45 @@ PendSVHandler_nosave
 
 
 
+////////////////对任务延时队列进行初始化
+void tTaskDelayedListInit(void){
+	tListInit(tTaskDelayedList);
+}
+
+////////////////将delayNode插入延时队列
+void tTimeTaskWait(tTask *task, uint32_t ticks){
+	task->delayTicks = ticks;
+	tListAddLast(tTaskDelayedList, &(task->delayNode));
+	task->state |= TINYOS_TASK_STATE_DELAYED;
+}
+
+////////////////从延时列表中移除delayNode
+void tTimeTaskWaitUp(tTask *task){
+	tListRemove(tTaskDelayedList, &(task->delayNode));
+	task->state &= ~TINYOS_TASK_STATE_DELAYED;                   //后面有其他用处，所以不要和TINYOS_TASK_STATE_RDY &
+}
+
+////////////////将任务插入就绪列表
+void tTaskSchedRdy(tTask *task){
+	taskTable[task->prio] = task;
+	tBitmapSet(&taskPrioBitmap, task->prio);
+}
+
+////////////////将任务从就绪列表中移除
+void tTaskSchedUnRdy(tTask *task){
+	taskTable[task->prio] = NULL;
+	tBitmapClear(&taskPrioBitmap, task->prio);
+}
 
 ////////////////软延时函数
 void tTaskDelay(uint32_t delay){
 	uint32_t status = tTaskEnterCritical();
 
-	currentTask->delayTicks = delay;                  
-	tBitmapClear(&taskPrioBitmap, currentTask->prio);
+	/*currentTask->delayTicks = delay;                  
+	tBitmapClear(&taskPrioBitmap, currentTask->prio);*/
+	tTimeTaskWait(currentTask, delay);
+	tTaskSchedUnRdy(currentTask);
+	
 	tTaskSched();
 	
 	tTaskExitCritical(status);	

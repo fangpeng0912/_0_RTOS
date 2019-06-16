@@ -1,10 +1,8 @@
-#include <stdlib.h>
 #include "tinyos.h"
-#include "tLib.h"
-#include "tConfig.h"
 
 extern void tSetSysTickPeriod(uint32_t);
 extern tTask *tTaskHighestReady(void);
+extern void tTaskDelayedListInit(void);
 
 //指向当前任务与下一任务的指针
 tTask *currentTask = NULL;
@@ -14,11 +12,10 @@ tTask *taskTable[TCONFIG_PRIO_COUNT] = {NULL, };
 uint8_t schedLockCount;
 //优先级位图
 tBitmap taskPrioBitmap;
+//延时队列
+tHeadNode head_node;
+tList tTaskDelayedList = &head_node;  //这里申请不了堆，编译器的问题？
 
-//延时函数
-/*void delay(int count){
-	while(--count > 0);
-}*/
 
 //任务初始化(任务指针，任务函数指针，任务函数参数指针(放入R0寄存器)，堆栈缓冲区尾指针)
 void tTaskInit(tTask *task, void (*entry)(void*), void *param, tTaskStack *stack, uint32_t prio){
@@ -43,6 +40,9 @@ void tTaskInit(tTask *task, void (*entry)(void*), void *param, tTaskStack *stack
 		task->stack = stack;
 		task->delayTicks = 0;
 	  task->prio = prio;
+	  task->state = TINYOS_TASK_STATE_RDY;  //对延时状态初始化
+
+	  tNodeInit(&(task->delayNode));        //对延时结点进行初始化
 		
 		//初始化任务列表，传入优先级后对相应位图置1
 		taskTable[prio] = task;
@@ -94,6 +94,8 @@ void IdleTaskEntry(void *param){
 int main(void){
 	//任务调度初始化
 	tTaskSchedInit();
+	//对任务延时队列进行初始化
+	tTaskDelayedListInit();
 	//任务初始化
 	tTaskInit(&tTask1, task1Entry, (void*)0x11111111, &task1Env[1024], 1);
 	tTaskInit(&tTask2, task2Entry, (void*)0x22222222, &task2Env[1024], 2);		
