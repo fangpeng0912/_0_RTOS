@@ -21,57 +21,6 @@ void tTaskSchedUnRdy(tTask *task);
 #define MEM8(addr)  *(volatile unsigned char*)(addr)
 #define MEM32(addr) *(volatile unsigned long*)(addr)
 
-//////////////SysTick初始化
-void tSetSysTickPeriod(uint32_t ms){
-	SysTick->LOAD = ms * SystemCoreClock / 1000;  //减到0溢出
-	NVIC_SetPriority(SysTick_IRQn, (1 << __NVIC_PRIO_BITS) - 1);
-	SysTick->VAL = 0;
-	SysTick->CTRL = SysTick_CTRL_CLKSOURCE_Msk |
-									SysTick_CTRL_TICKINT_Msk |
-									SysTick_CTRL_ENABLE_Msk;
-}
-
-///////////systick中断处理，并检测软延时计数器是否为零
-void tTaskSystemTickHandler(){
-	tNode *node = NULL;
-	tTask *task = NULL;
-	
-	uint32_t status = tTaskEnterCritical();
-
-	for(node = tTaskDelayedList->firstNode; node != &(tTaskDelayedList->headNode); node = node->nextNode){    
-		task = tNodeParent(node, tTask, delayNode);
-		if(--task->delayTicks == 0){
-			tTimeTaskWaitUp(task);
-			tTaskSchedRdy(task);
-		}
-	}
-
-	//当前任务时间片为0时，同优先级任务链表的结点数大于零，将当前任务结点放至链表末尾，也就是说同优先级间切换任务的最高时间间隔为TINYOS_SLICE_MAX个systemTicks
-	if(--currentTask->slice == 0){
-		if(tListCount(taskTable[currentTask->prio]) > 0){
-			tListRemoveFirst(taskTable[currentTask->prio]);
-			tListAddLast(taskTable[currentTask->prio], &(currentTask->linkNode));
-			currentTask->slice = TINYOS_SLICE_MAX;
-		}
-	}
-	
-	tTaskExitCritical(status);
-	
-	//任务调度
-	tTaskSched();
-}
-
-/////////////SysTick定时中断
-void SysTick_Handler(){
-	tTaskSystemTickHandler();
-}
-
-
-
-
-
-
-
 //任务调度初始化
 void tTaskSchedInit(void){
 	int i;
@@ -135,6 +84,36 @@ PendSVHandler_nosave
 	BX LR                             //退出异常时，硬件自动恢复R0-R3 -> R12 -> LR -> PC -> xPSR
 }
 
+///////////systick中断处理，并检测软延时计数器是否为零
+void tTaskSystemTickHandler(){
+	tNode *node = NULL;
+	tTask *task = NULL;
+	
+	uint32_t status = tTaskEnterCritical();
+
+	for(node = tTaskDelayedList->firstNode; node != &(tTaskDelayedList->headNode); node = node->nextNode){    
+		task = tNodeParent(node, tTask, delayNode);
+		if(--task->delayTicks == 0){
+			tTimeTaskWaitUp(task);
+			tTaskSchedRdy(task);
+		}
+	}
+
+	//当前任务时间片为0时，同优先级任务链表的结点数大于零，将当前任务结点放至链表末尾，也就是说同优先级间切换任务的最高时间间隔为TINYOS_SLICE_MAX个systemTicks
+	if(--currentTask->slice == 0){
+		if(tListCount(taskTable[currentTask->prio]) > 0){
+			tListRemoveFirst(taskTable[currentTask->prio]);
+			tListAddLast(taskTable[currentTask->prio], &(currentTask->linkNode));
+			currentTask->slice = TINYOS_SLICE_MAX;
+		}
+	}
+	
+	tTaskExitCritical(status);
+	
+	//任务调度
+	tTaskSched();
+}
+
 
 
 
@@ -171,20 +150,6 @@ void tTaskSchedUnRdy(tTask *task){
 	if(tListCount(taskTable[task->prio]) == 0){
 		tBitmapClear(&taskPrioBitmap, task->prio);
 	}	
-}
-
-////////////////软延时函数
-void tTaskDelay(uint32_t delay){
-	uint32_t status = tTaskEnterCritical();
-
-	/*currentTask->delayTicks = delay;                  
-	tBitmapClear(&taskPrioBitmap, currentTask->prio);*/
-	tTimeTaskWait(currentTask, delay);
-	tTaskSchedUnRdy(currentTask);
-	
-	tTaskSched();
-	
-	tTaskExitCritical(status);	
 }
 
 ///////////获取最高优先级任务

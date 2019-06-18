@@ -7,7 +7,8 @@
 #include "tConfig.h"
 
 #define TINYOS_TASK_STATE_RDY      0
-#define TINYOS_TASK_STATE_DELAYED  1
+#define TINYOS_TASK_STATE_DELAYED  (1<<1)
+#define TINYOS_TASK_STATE_SUSPEND  (1<<2)
 
 typedef uint32_t tTaskStack;
 
@@ -19,6 +20,7 @@ typedef struct{
 	uint32_t prio;         //任务的优先级
 	uint32_t state;        //任务是否处于延时状态
 	uint32_t slice;        //时间片计数器
+	uint32_t suspendCount; //挂起计数器
 }tTask;
 
 extern tTask *currentTask;
@@ -36,5 +38,20 @@ void tTaskSchedInit(void);
 void tTaskSchedDisable(void);
 void tTaskSchedEnable(void);
 void tTaskSched(void);
+
+void tSetSysTickPeriod(uint32_t);
+tTask *tTaskHighestReady(void);
+void tTaskDelayedListInit(void);
+void tTaskSystemTickHandler(void);
+void tTimeTaskWait(tTask *task, uint32_t ticks);
+void tTaskSchedUnRdy(tTask *task);
+void tTaskSchedRdy(tTask *task);
+
+void tTaskSuspend(tTask *task);
+void tTaskWakeUP(tTask *task);
+
+void tAppInit(void);
+
+
 
 #endif

@@ -395,6 +395,26 @@
               <FileType>1</FileType>
               <FilePath>.\source\tList.c</FilePath>
             </File>
+            <File>
+              <FileName>tCpu.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\source\tCpu.c</FilePath>
+            </File>
+            <File>
+              <FileName>tTask.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\source\tTask.c</FilePath>
+            </File>
+            <File>
+              <FileName>tTime.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\source\tTime.c</FilePath>
+            </File>
+            <File>
+              <FileName>app.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\source\app.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
