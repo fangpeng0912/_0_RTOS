@@ -20,7 +20,7 @@ typedef struct{
 	tNode delayNode;       //任务延时结点
 	uint32_t prio;         //任务的优先级
 	uint32_t state;        //任务是否处于延时状态
-	uint32_t slice;        //时间片计数器
+	uint32_t slice;        //时间片计数器, 用于同优先级不同任务，每个任务运行有一个最大slice，超过这个slice就要切换任务了
 	uint32_t suspendCount; //挂起计数器
 
 	void (*clean)(void *param);   //清理函数
@@ -52,6 +52,14 @@ void tTimeTaskWait(tTask *task, uint32_t ticks);
 void tTaskSchedUnRdy(tTask *task);
 void tTaskSchedRdy(tTask *task);
 
+typedef struct{
+	uint32_t delayTicks;
+	uint32_t prio;
+	uint32_t state;
+	uint32_t slice;
+	uint32_t suspendCount;
+}TtaskInfo;
+
 void tTaskInit(tTask *task, void (*entry)(void*), void *param, tTaskStack *stack, uint32_t prio);
 void tTaskSuspend(tTask *task);
 void tTaskWakeUP(tTask *task);
@@ -62,6 +70,7 @@ void tTaskForceDelete(tTask *task);
 void tTaskRequestDelete(tTask *task);
 uint8_t tTaskIsRequestedDelated(void);
 void tTaskDeleteSelf(void);
+void tTaskGetInfo(tTask *task, TtaskInfo *info);
 
 void tAppInit(void);
 

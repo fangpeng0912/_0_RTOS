@@ -13,20 +13,17 @@ tTaskStack task3Env[1024];
 tTask tIdleTask;
 tTaskStack idleTaskEnv[TINYOS_IDLETASK_STACK_SIZE];
 
+TtaskInfo taskInfo;
 
 int task1Flag;
-
-void cleanTask1Func(void *param){
-	task1Flag = 0;
-}
-
 //任务1
 void task1Entry(void *param){
+	
 	tSetSysTickPeriod(10);
 	
-	tTaskSetCleanCallFunc(currentTask, cleanTask1Func, NULL);
-	
 	while(1){
+		tTaskGetInfo(currentTask, &taskInfo);
+		tTaskGetInfo(&tTask2, &taskInfo);
 		task1Flag = 1;
 		tTaskDelay(1);
 		task1Flag = 0;
@@ -37,19 +34,11 @@ void task1Entry(void *param){
 //任务2
 int task2Flag;
 void task2Entry(void *param){
-	
-	uint8_t task1Deleted = 0;
-	
 	while(1){
 		task2Flag = 1;
 		tTaskDelay(2);
 		task2Flag = 0;
 		tTaskDelay(2);
-
-		if(!task1Deleted){
-			tTaskForceDelete(&tTask1);
-			task1Deleted = 1;
-		}
 	}
 }
 
