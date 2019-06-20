@@ -152,6 +152,20 @@ void tTaskSchedUnRdy(tTask *task){
 	}	
 }
 
+//将任务从优先级队列中移除
+void tTaskSchedRemove(tTask *task){
+	tListRemove(taskTable[task->prio], &(task->linkNode));
+	//当同优先级任务列表中没有其他任务，将对应优先级位图清零
+	if(tListCount(taskTable[task->prio]) == 0){
+		tBitmapClear(&taskPrioBitmap, task->prio);
+	}
+}
+
+//将任务从延时队列中移除
+void tTimeTaskRemove(tTask *task){
+	tListRemove(tTaskDelayedList, &(task->delayNode));
+}
+
 ///////////获取最高优先级任务
 tTask *tTaskHighestReady(void){
 	uint32_t highestPrio = tBitmapGetFirstSet(&taskPrioBitmap);

@@ -1,44 +1,55 @@
 #include "tinyos.h"
 
-extern void tTaskInit(tTask *task, void (*entry)(void*), void *param, tTaskStack *stack, uint32_t prio);
-
 //定义任务和任务堆栈
 tTask tTask1;
 tTask tTask2;
 tTask tTask3;
 
-
 tTaskStack task1Env[1024];
 tTaskStack task2Env[1024];
 tTaskStack task3Env[1024];
-
 
 //添加空闲任务
 tTask tIdleTask;
 tTaskStack idleTaskEnv[TINYOS_IDLETASK_STACK_SIZE];
 
-//任务1
+
 int task1Flag;
+
+void cleanTask1Func(void *param){
+	task1Flag = 0;
+}
+
+//任务1
 void task1Entry(void *param){
 	tSetSysTickPeriod(10);
+	
+	tTaskSetCleanCallFunc(currentTask, cleanTask1Func, NULL);
+	
 	while(1){
 		task1Flag = 1;
-		tTaskSuspend(currentTask);
+		tTaskDelay(1);
 		task1Flag = 0;
-		tTaskSuspend(currentTask);
+		tTaskDelay(1);
 	}
 }
 
 //任务2
 int task2Flag;
 void task2Entry(void *param){
+	
+	uint8_t task1Deleted = 0;
+	
 	while(1){
 		task2Flag = 1;
-		tTaskDelay(1);
-		tTaskWakeUP(&tTask1);
+		tTaskDelay(2);
 		task2Flag = 0;
-		tTaskDelay(1);
-		tTaskWakeUP(&tTask1);
+		tTaskDelay(2);
+
+		if(!task1Deleted){
+			tTaskForceDelete(&tTask1);
+			task1Deleted = 1;
+		}
 	}
 }
 
