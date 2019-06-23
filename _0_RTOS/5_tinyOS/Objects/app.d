@@ -4,3 +4,4 @@
 .\objects\app.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
 .\objects\app.o: source\tLib.h
 .\objects\app.o: source\tConfig.h
+.\objects\app.o: source\tEvent.h

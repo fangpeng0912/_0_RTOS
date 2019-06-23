@@ -5,6 +5,11 @@
 #include <stdlib.h>
 #include "tLib.h"
 #include "tConfig.h"
+#include "tEvent.h"
+
+typedef enum{
+	tErrorNoError = 0,    //等待事件的结果
+}tError;
 
 #define TINYOS_TASK_STATE_RDY                0
 #define TINYOS_TASK_STATE_DESTROYED          (1<<1)
@@ -26,6 +31,10 @@ typedef struct{
 	void (*clean)(void *param);   //清理函数
 	void *cleanParam;                  //用于保存参数
 	uint8_t requestDeleteFlag;    //删除请求标记
+
+	tEvent *waitEvent;      //等待的事件块
+	void *eventMsg;         //事件消息
+	uint32_t waitEventResult;  //等待事件的结果
 }tTask;
 
 extern tTask *currentTask;

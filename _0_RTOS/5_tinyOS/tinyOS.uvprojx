@@ -415,6 +415,11 @@
               <FileType>1</FileType>
               <FilePath>.\source\app.c</FilePath>
             </File>
+            <File>
+              <FileName>tEvent.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\source\tEvent.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

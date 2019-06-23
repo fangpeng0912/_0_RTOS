@@ -1,0 +1,19 @@
+/app.crf
+/app.o
+/main.crf
+/main.o
+/switch.crf
+/switch.o
+/system_armcm3.o
+/tcpu.crf
+/tcpu.o
+/tinyOS.axf
+/tinyOS.build_log.htm
+/tinyOS.htm
+/tinyOS_Target 1.dep
+/tlib.o
+/tlist.o
+/ttask.crf
+/ttask.o
+/ttime.crf
+/ttime.o
