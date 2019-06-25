@@ -4,4 +4,5 @@
 .\objects\ttask.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
 .\objects\ttask.o: source\tLib.h
 .\objects\ttask.o: source\tConfig.h
+.\objects\ttask.o: source\tTask.h
 .\objects\ttask.o: source\tEvent.h

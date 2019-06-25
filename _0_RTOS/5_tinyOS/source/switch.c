@@ -1,13 +1,9 @@
 #include "tinyos.h"
 #include "ARMCM3.h"
 
-extern tBitmap taskPrioBitmap;
-extern tList tTaskDelayedList;
-extern tHeadNode similar_prio_task_head_node[TCONFIG_PRIO_COUNT];
-
 void tTaskDelayedListInit(void);
 void tTimeTaskWait(tTask *task, uint32_t ticks);
-void tTimeTaskWaitUp(tTask *task);
+void tTimeTaskWakeUp(tTask *task);
 void tTaskSchedRdy(tTask *task);
 void tTaskSchedUnRdy(tTask *task);
 
@@ -94,7 +90,13 @@ void tTaskSystemTickHandler(){
 	for(node = tTaskDelayedList->firstNode; node != &(tTaskDelayedList->headNode); node = node->nextNode){    
 		task = tNodeParent(node, tTask, delayNode);
 		if(--task->delayTicks == 0){
-			tTimeTaskWaitUp(task);
+			/*看任务是否在等待事件*/
+			if(task->waitEvent){
+				tEventRemoveTask(task, NULL, tErrorTimeout);
+			}
+			/*看任务是否在等待事件*/
+			
+			tTimeTaskWakeUp(task);
 			tTaskSchedRdy(task);
 		}
 	}
@@ -132,7 +134,7 @@ void tTimeTaskWait(tTask *task, uint32_t ticks){
 }
 
 ////////////////从延时列表中移除delayNode
-void tTimeTaskWaitUp(tTask *task){
+void tTimeTaskWakeUp(tTask *task){
 	tListRemove(tTaskDelayedList, &(task->delayNode));
 	task->state &= ~TINYOS_TASK_STATE_DELAYED;                   //后面有其他用处，所以不要和TINYOS_TASK_STATE_RDY &
 }

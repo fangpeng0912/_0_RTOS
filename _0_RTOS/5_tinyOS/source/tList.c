@@ -49,7 +49,7 @@ tNode *tListPre (tList list, tNode *node){
 }
 
 //返回链表中指定结点的后一结点
-tNode * tListNext (tList list, tNode * node){
+tNode *tListNext (tList list, tNode * node){
 	if (node->nextNode == node){
 		return (tNode *)0;
 	}
@@ -102,7 +102,7 @@ void tListAddLast (tList list, tNode *node){
 }
 
 //移除链表中的第一个结点
-tNode * tListRemoveFirst (tList list){
+tNode *tListRemoveFirst (tList list){
   tNode *node = (tNode *)0;
 
 	if(list->nodeCount != 0){

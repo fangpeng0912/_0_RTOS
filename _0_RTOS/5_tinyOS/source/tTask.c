@@ -46,7 +46,7 @@ void tTaskSuspend(tTask *task){
 	uint32_t status = tTaskEnterCritical();
 
 	if(!(task->state & TINYOS_TASK_STATE_DELAYED)){   //看是否处于延时状态，如果处于，不能执行任务挂起，因为此时任务已经从任务列表中删除
-		if(++task->suspendCount ==1){                 //看是否是第一次被挂起
+		if(++task->suspendCount == 1){                 //看是否是第一次被挂起
 			task->state |= TINYOS_TASK_STATE_SUSPEND;
 			tTaskSchedUnRdy(task);
 			if(task == currentTask){

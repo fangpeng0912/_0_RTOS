@@ -14,15 +14,13 @@ void tBitmapClear(tBitmap *bitmap, uint32_t pos);
 uint32_t tBitmapGetFirstSet(tBitmap *bitmap);
 
 //双向链表结点类型
-typedef struct _tNode
-{
+typedef struct _tNode{
     struct _tNode *preNode;
     struct _tNode *nextNode;
 }tNode;
 
 //双向链表
-typedef struct
-{   
+typedef struct{   
     tNode headNode;
     uint32_t nodeCount;
 }tHeadNode;
