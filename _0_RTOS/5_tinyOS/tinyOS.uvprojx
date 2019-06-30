@@ -420,6 +420,11 @@
               <FileType>1</FileType>
               <FilePath>.\source\tEvent.c</FilePath>
             </File>
+            <File>
+              <FileName>tSem.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\source\tSem.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

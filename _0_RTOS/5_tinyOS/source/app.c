@@ -13,7 +13,7 @@ tTaskStack task3Env[1024];
 tTask tIdleTask;
 tTaskStack idleTaskEnv[TINYOS_IDLETASK_STACK_SIZE];
 
-tEvent eventWaitTimeout;
+tSem sem;
 
 int task1Flag;
 //ÈÎÎñ1
@@ -21,11 +21,10 @@ void task1Entry(void *param){
 	
 	tSetSysTickPeriod(10);
 
-	tEventInit(&eventWaitTimeout, tEventTypeUnknow);
-	
+	tSemInit(&sem, 1, 10);
 	while(1){
-		tEventWait(&eventWaitTimeout, currentTask, NULL, TINYOS_TASK_WAIT_MASK, 5);
-		tTaskSched();
+		tSemNoWaitGet(&sem);
+		tSemWait(&sem, 0);
 		
 		task1Flag = 1;
 		tTaskDelay(1);
@@ -38,13 +37,12 @@ void task1Entry(void *param){
 int task2Flag;
 void task2Entry(void *param){
 	while(1){
-		tTask *task = tEventWakeUp(&eventWaitTimeout, NULL, tErrorNoError);
-		tTaskSched();
-	
 		task2Flag = 1;
 		tTaskDelay(2);
 		task2Flag = 0;
 		tTaskDelay(2);
+		
+		tSemNotify(&sem);
 	}
 }
 

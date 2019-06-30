@@ -7,10 +7,13 @@
 #include "tConfig.h"
 #include "tTask.h"
 #include "tEvent.h"
+#include "tSem.h"
 
 typedef enum{
-	tErrorNoError = 0,    //等待事件的结果
-	tErrorTimeout = 1,    //超时
+	tErrorNoError = 0,                           //等待事件的结果
+	tErrorTimeout,                               //超时
+	tErrorResourceUnavailable,                   //资源不可用
+	tErrorDel,                                   //计数信号量删除
 }tError;
 
 extern tTask *currentTask;

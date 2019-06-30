@@ -6,3 +6,4 @@
 .\objects\ttask.o: source\tConfig.h
 .\objects\ttask.o: source\tTask.h
 .\objects\ttask.o: source\tEvent.h
+.\objects\ttask.o: source\tSem.h
