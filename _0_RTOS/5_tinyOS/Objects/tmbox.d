@@ -1,0 +1,10 @@
+.\objects\tmbox.o: source\tMbox.c
+.\objects\tmbox.o: source\tinyos.h
+.\objects\tmbox.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\tmbox.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+.\objects\tmbox.o: source\tLib.h
+.\objects\tmbox.o: source\tConfig.h
+.\objects\tmbox.o: source\tTask.h
+.\objects\tmbox.o: source\tEvent.h
+.\objects\tmbox.o: source\tSem.h
+.\objects\tmbox.o: source\tMbox.h

@@ -5,7 +5,8 @@
 
 typedef enum{
 	tEventTypeUnknow,
-	tEventTypeSem,
+	tEventTypeSem,                               //计数信号量
+	tEventTypeMbox,                              //邮箱
 }tEventType;
 
 typedef struct _tEvent{

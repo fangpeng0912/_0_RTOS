@@ -1,4 +1,4 @@
-#include "tSem.h"
+#include "tinyos.h"
 
 void tSemInit(tSem *sem, uint32_t startCount, uint32_t maxCount){
 	tEventInit(&sem->event, tEventTypeSem);

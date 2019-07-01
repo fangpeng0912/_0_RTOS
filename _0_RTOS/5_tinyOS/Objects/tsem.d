@@ -7,3 +7,4 @@
 .\objects\tsem.o: source\tTask.h
 .\objects\tsem.o: source\tEvent.h
 .\objects\tsem.o: source\tSem.h
+.\objects\tsem.o: source\tMbox.h

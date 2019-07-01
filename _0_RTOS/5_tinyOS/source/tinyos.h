@@ -8,6 +8,7 @@
 #include "tTask.h"
 #include "tEvent.h"
 #include "tSem.h"
+#include "tMbox.h"
 
 typedef enum{
 	tErrorNoError = 0,                           //等待事件的结果
