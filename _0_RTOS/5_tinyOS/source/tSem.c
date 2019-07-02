@@ -48,6 +48,7 @@ uint32_t tSemNoWaitGet(tSem *sem){
 		
 }
 
+//计数信号量的释放，与此时计数器的值无关，只与事件控制块中是否有任务有关
 void tSemNotify(tSem *sem){
 	uint32_t status = tTaskEnterCritical();
 

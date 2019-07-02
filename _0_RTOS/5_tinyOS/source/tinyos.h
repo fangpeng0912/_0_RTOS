@@ -15,6 +15,7 @@ typedef enum{
 	tErrorTimeout,                               //超时
 	tErrorResourceUnavailable,                   //资源不可用
 	tErrorDel,                                   //计数信号量删除
+	tErrorResourceFull,                          //邮箱资源满
 }tError;
 
 extern tTask *currentTask;
