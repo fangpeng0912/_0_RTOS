@@ -8,3 +8,4 @@
 .\objects\tmbox.o: source\tEvent.h
 .\objects\tmbox.o: source\tSem.h
 .\objects\tmbox.o: source\tMbox.h
+.\objects\tmbox.o: source\tMemBlock.h

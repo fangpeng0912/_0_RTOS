@@ -430,6 +430,16 @@
               <FileType>1</FileType>
               <FilePath>.\source\tMbox.c</FilePath>
             </File>
+            <File>
+              <FileName>tMemBlock.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\source\tMemBlock.c</FilePath>
+            </File>
+            <File>
+              <FileName>tFlagGroup.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\source\tFlagGroup.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

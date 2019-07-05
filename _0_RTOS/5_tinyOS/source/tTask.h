@@ -32,6 +32,9 @@ typedef struct{
 	struct _tEvent *waitEvent;      //等待的事件块
 	void *eventMsg;         //事件消息
 	uint32_t waitEventResult;  //等待事件的结果
+
+	uint32_t waitFlagsType;   //等待标志类型
+	uint32_t eventFlags;      //事件标志
 }tTask;
 
 typedef struct{

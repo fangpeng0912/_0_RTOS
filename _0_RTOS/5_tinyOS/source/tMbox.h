@@ -24,7 +24,7 @@ typedef struct _tMoxInfo{
 void tMboxInit(tMbox *mbox, void **msgBuffer, uint32_t maxCount);
 uint32_t tMboxWait (tMbox *mbox, void **msg, uint32_t waitTicks);
 uint32_t tMboxNoWaitGet (tMbox *mbox, void **msg);
-uint32_t tMboxNotify (tMbox *mbox, void *msg, uint32_t notifyOption);
+  uint32_t tMboxNotify (tMbox *mbox, void *msg, uint32_t notifyOption);
 void tMboxFlush(tMbox *mbox);
 uint32_t tMboxDestroy(tMbox *mbox);
 void tMboxGetInfo(tMbox *mbox, tMboxInfo *info);

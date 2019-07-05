@@ -9,12 +9,14 @@
 #include "tEvent.h"
 #include "tSem.h"
 #include "tMbox.h"
+#include "tMemBlock.h"
+#include "tinyos.h"
 
 typedef enum{
 	tErrorNoError = 0,                           //等待事件的结果
 	tErrorTimeout,                               //超时
 	tErrorResourceUnavailable,                   //资源不可用
-	tErrorDel,                                   //计数信号量删除
+	tErrorDel,                                   //资源的删除
 	tErrorResourceFull,                          //邮箱资源满
 }tError;
 
