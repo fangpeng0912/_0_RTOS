@@ -1,6 +1,8 @@
 #ifndef _TFLAGGROUP_H_
 #define _TFLAGGROUP_H_
 
+#include "tEvent.h"
+
 typedef struct _tFlagGroup
 {
 	// 事件控制块
@@ -9,6 +11,17 @@ typedef struct _tFlagGroup
     // 当前事件标志
     uint32_t flags;
 }tFlagGroup;
+
+// 事件标志组查询信息
+typedef struct _tFlagGroupInfo
+{
+    // 当前的事件标志
+    uint32_t flags;
+
+    // 当前等待的任务计数
+    uint32_t taskCount;
+}tFlagGroupInfo;
+
 
 //任务想请求哪种事件类型
 #define TFLAGGROUP_CLEAR (0x0 << 0)       //清除类型
@@ -26,11 +39,11 @@ typedef struct _tFlagGroup
 void tFlagGroupInit (tFlagGroup * flagGroup, uint32_t flags);
 uint32_t tFlagGroupWait (tFlagGroup *flagGroup, uint32_t waitType, uint32_t requestFlag,
 						uint32_t *resultFlag, uint32_t waitTicks);
-uint32_t tFlagGroupNoWaitGet (tFlagGroup *flagGroup, uint32_t waitType, uint32_t requstFlag, uint32_t *requestFlag);
+uint32_t tFlagGroupNoWaitGet (tFlagGroup *flagGroup, uint32_t waitType, uint32_t requstFlag, uint32_t *resultFlag);
 void tFlagGroupNotify (tFlagGroup *flagGroup, uint8_t isSet, uint32_t flags);
 static uint32_t tFlagGroupCheckAndConsume (tFlagGroup *flagGroup, uint32_t type, uint32_t *flags);
-void tFlagGroupGetInfo (tFlagGroup * flagGroup, tFlagGroupInfo * info)
-uint32_t tFlagGroupDestroy (tFlagGroup * flagGroup);
+void tFlagGroupGetInfo (tFlagGroup *flagGroup, tFlagGroupInfo *info);
+uint32_t tFlagGroupDestroy (tFlagGroup *flagGroup);
 
 
 #endif

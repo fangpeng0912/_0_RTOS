@@ -4,8 +4,8 @@
 tTask *currentTask = NULL;
 tTask *nextTask = NULL;
 //同优先级任务链表
-tHeadNode similar_prio_task_head_node[TCONFIG_PRIO_COUNT];
-tList taskTable[TCONFIG_PRIO_COUNT] = {NULL, };
+tHeadNode similar_prio_task_head_node[TINYOS_PRO_COUNT];
+tList taskTable[TINYOS_PRO_COUNT] = {NULL, };
 //调度锁计数器
 uint8_t schedLockCount;
 //优先级位图

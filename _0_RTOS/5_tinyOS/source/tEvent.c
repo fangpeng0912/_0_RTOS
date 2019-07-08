@@ -55,6 +55,31 @@ tTask *tEventWakeUp(tEvent *event, void *msg, uint32_t result){
 	return task;
 }
 
+//从事件控制块中唤醒指定任务
+tTask *tEventWakeUpTask(tEvent *event, tTask *task, void *msg, uint32_t result){
+	uint32_t status = tTaskEnterCritical();
+
+	tListRemove(event->waitList, &task->linkNode);
+	
+	task->waitEvent = NULL;
+	task->eventMsg = msg;
+	task->waitEventResult = result;
+	task->state &= ~TINYOS_TASK_WAIT_MASK;
+
+	//看是否还在延时队列中(即没有超时)，如果在，直接从延时队列中唤醒
+	if(task->delayTicks != 0){
+		tTimeTaskWakeUp(task);
+	}
+		
+	//将任务插入就绪列表
+	tTaskSchedRdy(task);
+	
+	tTaskExitCritical(status);
+	
+	return task;
+}
+
+
 //从事件块中移除任务(并没有唤醒这个任务，此时任务可能还在延时列表中)          
 void tEventRemoveTask(tTask *task, void *msg, uint32_t result){
 	uint32_t status = tTaskEnterCritical();

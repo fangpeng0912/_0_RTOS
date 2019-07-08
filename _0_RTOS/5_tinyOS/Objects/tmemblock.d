@@ -9,3 +9,5 @@
 .\objects\tmemblock.o: source\tSem.h
 .\objects\tmemblock.o: source\tMbox.h
 .\objects\tmemblock.o: source\tMemBlock.h
+.\objects\tmemblock.o: source\tFlagGroup.h
+.\objects\tmemblock.o: source\tMutex.h

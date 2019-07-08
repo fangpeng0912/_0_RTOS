@@ -9,6 +9,8 @@
 .\objects\tcpu.o: source\tSem.h
 .\objects\tcpu.o: source\tMbox.h
 .\objects\tcpu.o: source\tMemBlock.h
+.\objects\tcpu.o: source\tFlagGroup.h
+.\objects\tcpu.o: source\tMutex.h
 .\objects\tcpu.o: C:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\Device\ARM\ARMCM3\Include\ARMCM3.h
 .\objects\tcpu.o: C:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\Include\core_cm3.h
 .\objects\tcpu.o: C:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\Include\core_cmInstr.h

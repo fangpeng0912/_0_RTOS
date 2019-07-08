@@ -25,7 +25,7 @@ void tTaskSchedInit(void){
 	//将任务优先级位图清零
 	tBitmapInit(&taskPrioBitmap);
 	//对同优先级列表进行初始化
-	for(i = 0; i < TCONFIG_PRIO_COUNT; ++i){
+	for(i = 0; i < TINYOS_PRO_COUNT; ++i){
 		taskTable[i] = &similar_prio_task_head_node[i];
 		tListInit(taskTable[i]);
 	}

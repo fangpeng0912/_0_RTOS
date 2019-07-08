@@ -10,7 +10,8 @@
 #include "tSem.h"
 #include "tMbox.h"
 #include "tMemBlock.h"
-#include "tinyos.h"
+#include "tFlagGroup.h"
+#include "tMutex.h"
 
 typedef enum{
 	tErrorNoError = 0,                           //等待事件的结果
@@ -18,6 +19,7 @@ typedef enum{
 	tErrorResourceUnavailable,                   //资源不可用
 	tErrorDel,                                   //资源的删除
 	tErrorResourceFull,                          //邮箱资源满
+	tErrorOwner,                                 //拥有者错误
 }tError;
 
 extern tTask *currentTask;
@@ -27,7 +29,7 @@ extern tList taskTable[];
 extern uint8_t schedLockCount;
 extern tBitmap taskPrioBitmap;
 extern tList tTaskDelayedList;
-extern tHeadNode similar_prio_task_head_node[TCONFIG_PRIO_COUNT];
+extern tHeadNode similar_prio_task_head_node[TINYOS_PRO_COUNT];
 
 void tTaskRunFirst(void);
 void tTaskSwitch(void);

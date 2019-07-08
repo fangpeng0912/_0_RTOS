@@ -68,5 +68,5 @@ void tAppInit(void){
 	tTaskInit(&tTask1, task1Entry, (void*)0x11111111, &task1Env[1024], 0);
 	tTaskInit(&tTask2, task2Entry, (void*)0x22222222, &task2Env[1024], 1);		
 	tTaskInit(&tTask3, task3Entry, (void*)0x33333333, &task3Env[1024], 1);	
-	tTaskInit(&tIdleTask, IdleTaskEntry, (void*)0x0, &idleTaskEnv[TINYOS_IDLETASK_STACK_SIZE], TCONFIG_PRIO_COUNT - 1);		 
+	tTaskInit(&tIdleTask, IdleTaskEntry, (void*)0x0, &idleTaskEnv[TINYOS_IDLETASK_STACK_SIZE], TINYOS_PRO_COUNT - 1);		 
 }

@@ -9,6 +9,8 @@
 .\objects\switch.o: source\tSem.h
 .\objects\switch.o: source\tMbox.h
 .\objects\switch.o: source\tMemBlock.h
+.\objects\switch.o: source\tFlagGroup.h
+.\objects\switch.o: source\tMutex.h
 .\objects\switch.o: C:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\Device\ARM\ARMCM3\Include\ARMCM3.h
 .\objects\switch.o: C:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\Include\core_cm3.h
 .\objects\switch.o: C:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\Include\core_cmInstr.h
